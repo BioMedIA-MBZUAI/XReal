@@ -120,7 +120,7 @@ python cnet/train_cnet.py -b ../configs/xreal-diff-t2i_cnet.yml
 
 ## Citation
 
-If you use **xreal** or our repository in your research, please cite our paper *Cascaded Latent Diffusion Models for High-Resolution Chest X-ray Synthesis*:
+If you use **xreal** or our repository in your research, please cite our paper *XReal: Realistic Anatomy and Pathology-Aware X-ray Generation via Controllable Diffusion Model*:
 
 ```
 @article{hashmi2024xreal,
