@@ -1,0 +1,1 @@
+from xreal.ldm.modules.losses.contperceptual import LPIPSWithDiscriminator

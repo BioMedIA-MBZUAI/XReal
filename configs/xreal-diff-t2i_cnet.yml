@@ -1,0 +1,122 @@
+model:
+  base_learning_rate: 1.0e-05 # recommended: 1.0e-05
+  target: cldm.cldm.ControlLDM
+  resume_path: ./saved_models/cnet_base.pt
+  sd_locked: True
+  params:
+    only_mid_control: False
+    linear_start: 0.0015
+    linear_end: 0.0295
+    num_timesteps_cond: 1
+    log_every_t: 1
+    timesteps: 1000
+    first_stage_key: target # target is the image
+    cond_stage_key: text_labels
+    control_key: image # image is the mask
+    image_size: 64
+    channels: 3
+    cond_stage_trainable: false
+    conditioning_key: crossattn
+    monitor: val/loss_simple_ema
+    scale_factor: 0.18215
+
+    control_stage_config:
+      target: cldm.cldm.ControlNet
+      params:
+        image_size: 64
+        in_channels: 3
+        hint_channels: 3 # mask channels | all three are same
+        model_channels: 224
+        attention_resolutions:
+        - 8
+        - 4
+        - 2
+        num_res_blocks: 2
+        channel_mult:
+        - 1
+        - 2
+        - 4
+        - 4
+        num_heads: 8
+        use_spatial_transformer: true
+        transformer_depth: 1
+        context_dim: 1280
+        use_checkpoint: true
+        legacy: False
+
+    unet_config:
+      target: cldm.cldm.ControlledUnetModel
+      params:
+        image_size: 64
+        in_channels: 3
+        out_channels: 3
+        model_channels: 224
+        attention_resolutions:
+        - 8
+        - 4
+        - 2
+        num_res_blocks: 2
+        channel_mult:
+        - 1
+        - 2
+        - 4
+        - 4
+        num_heads: 8
+        use_spatial_transformer: true
+        transformer_depth: 1
+        context_dim: 1280
+        use_checkpoint: true
+        legacy: False
+
+    first_stage_config:
+      target: ldm.models.autoencoder.AutoencoderKL
+      params:
+        embed_dim: 3
+        ckpt_path: ./saved_models/ldm_ae.pt
+        ddconfig:
+          double_z: True
+          z_channels: 3
+          resolution: 256
+          in_channels: 3
+          out_ch: 3
+          ch: 128
+          ch_mult:
+          - 1
+          - 2
+          - 4
+          num_res_blocks: 2
+          attn_resolutions: []
+          dropout: 0.0
+        lossconfig:
+          target: torch.nn.Identity
+
+
+    cond_stage_config:
+      target: xreal.ldm.modules.encoders.modules.BERTEmbedder
+      params:
+        n_embed: 1280
+        n_layer: 32
+
+data:
+  params:
+    batch_size: 2 # 2
+    csv_path: ./datasets/mimic/mimic_pt.csv
+    dataset_name: mimic
+    data_path: null
+    num_workers: 16
+    mask_prob: 1.0
+
+lightning:
+  callbacks:
+    image_logger:
+      target: cnet.train_cnet.ImageLogger
+      params:
+        batch_frequency: 4000
+        max_images: 1
+        increase_log_steps: False
+
+  trainer:
+    gpus: 1
+    benchmark: False
+    strategy: ddp
+    max_epochs: 100
