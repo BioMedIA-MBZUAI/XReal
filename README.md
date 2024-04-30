@@ -86,7 +86,7 @@ mv ./CLIP ./clip
 
 ## Inference
 
-Please check the tutorial in this [notebook](notebooks/01_xreal.ipynb).
+Please check the tutorial in this [notebook](notebooks/xreal_inference.ipynb).
 
 ## Dataset
 - We used the MIMIC-CXR-JPG dataset to train our models. The dataset can be downloaded from [here](https://physionet.org/content/mimic-cxr-jpg/2.0.0/).
