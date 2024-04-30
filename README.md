@@ -36,9 +36,10 @@
 1) [Overview](#overview)
 2) [Setup](#setup)
 3) [Inference](#inference)
-4) [Training](#training)
-5) [Citation](#citation)
-6) [References](#references)
+4) [Dataset](#dataset)
+5) [Training](#training)
+6) [Citation](#citation)
+7) [References](#references)
 
 ## Overview
 ![main figure](assets/arch.png)
@@ -86,6 +87,14 @@ mv ./CLIP ./clip
 ## Inference
 
 Please check the tutorial in this [notebook](notebooks/01_xreal.ipynb).
+
+## Dataset
+- We used the MIMIC-CXR-JPG dataset to train our models. The dataset can be downloaded from [here](https://physionet.org/content/mimic-cxr-jpg/2.0.0/).
+
+1. Follow the `data_preprocessing/prerprocess_mimic_cxr.ipynb` file to pre-process the CSVs and images.
+- Note that we use images in .pt format for training with size 256x256.
+- Adjust the image preprocessing according to your requirements.
+- Put the csv path in the config file before training.
 
 ## Training
 

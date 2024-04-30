@@ -16,7 +16,6 @@ class DataUnet(Dataset):
             root_dir, 
             image_set, 
             image_size, 
-            # class_id_mapping = {0: 0, 3: 1, 8: 2, 11: 3, 13: 4, 14: 5, 15: 6}, 
             multi_channel_mask = False, 
             return_yolo_labels = False,
             return_text_labels = True,
@@ -142,16 +141,14 @@ class DataUnet(Dataset):
     def __getitem__(self, idx):
         img_id = self.img_ids[idx]
         img_data = self.ann_df[self.ann_df['image_id'] == img_id]
-        # img_id = img_data['image_id']
-        if self.data_path is not None:
-            img_path = img_data['path'].tolist()[0].replace('/share/nvmedata/', self.data_path)
+        if self.data_path is not None: # not used by default
+            img_path = img_data['path'].tolist()[0].replace('REPLACE THIS ACCORDINGLY', self.data_path)
         else:
             img_path = img_data['path'].tolist()[0]
         img = torch.load(img_path) # image has shape [512, 512]
         if img.shape[0] == 1: # quick fix for RSNA images
             img = img[0]
 
-        # if self.return_organ_mask: # get the organ mask
         if self.return_organ_mask: # get the organ mask
             masks = torch.load(img_path[:-3]+"_seg.pt").unsqueeze(0)
         else: # get lesion mask
@@ -164,12 +161,10 @@ class DataUnet(Dataset):
         masks = transformed['mask'] # original size masks for controlnet
         img = transformed['image']
 
-        # masks = transformed['mask']
         masks = torch.stack([masks, masks, masks]) # conver to 3 channel mask
 
         img = img.expand(3,*img.shape[1:]) # convert to 3 channel
         img = (img - img.min())/ (img.max() - img.min())
-        # img = img*2 - 1 # WHY IS THIS HERE??
 
         if self.return_text_labels:
             text_label = f"{' '.join(img_data['class_name'].tolist())}"
@@ -279,7 +274,6 @@ class DataVAE(Dataset):
             raise ValueError("Input list should contain only 1s and 0s")
 
     def __len__(self):
-        # return len(self.data_path) if self.return_labels is False else len(self.df)
         return len(self.df)
 
     def get_text_labels(self, labels_ids):
@@ -315,11 +309,7 @@ class DataVAE(Dataset):
             img = self.transform2(image = transformed['image'])['image']
             mask = self.transform2_mask(image = transformed['mask'])['image']
         
-        # img = transformed['image']
-        # mask = transformed['mask'].unsqueeze(0)
-        
         if mask.max()> 0: # loss nan bug fix, some images have all 0 masks
-            # mask = (mask - mask.min())/ (mask.max() - mask.min())
             mask = mask/ 4 # or this
 
         img = img.expand(3,*img.shape[1:])
