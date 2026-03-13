@@ -60,7 +60,7 @@ git clone https://github.com/BioMedIA-MBZUAI/XReal.git
 pip install -r requirements.txt
 ```
 
-3. Download the pre-trained models from [here](https://mbzuaiac-my.sharepoint.com/:u:/g/personal/anees_hashmi_mbzuai_ac_ae/ESKGv_LIDm9Cq9bUOsc-JlsB85ha20NyYJ5Wrz1n_4j4kQ?e=5Ru9iE)
+3. Download the pre-trained models from [here](https://mbzuaiac-my.sharepoint.com/:u:/g/personal/anees_hashmi_alumni_mbzuai_ac_ae/ESKGv_LIDm9Cq9bUOsc-JlsB85ha20NyYJ5Wrz1n_4j4kQ?e=5Ru9iE)
 
 4. Extract the downloaded models in the root directory.
 
